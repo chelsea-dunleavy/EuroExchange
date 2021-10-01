@@ -39,13 +39,17 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        UIView.animate(withDuration: 1, animations: {
-            self.launchLabel.alpha = 0
-        }, completion: { fin in
-            if fin {
-                self.navigationController?.pushViewController(ConversionViewController(), animated: false)
+        retrieveExchangeRate {
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 1, animations: {
+                    self.launchLabel.alpha = 0
+                }, completion: { fin in
+                    if fin {
+                        self.navigationController?.pushViewController(ConversionViewController(), animated: false)
+                    }
+                })
             }
-        })
+        }
     }
     
     func setupView() {
@@ -65,6 +69,36 @@ class ViewController: UIViewController {
         let attrStr2 = NSMutableAttributedString(string: str2, attributes: attr2)
         attrStr1.append(attrStr2)
         return attrStr1
+    }
+    
+    func retrieveExchangeRate(completion: @escaping () -> Void) {
+        let session = URLSession.shared
+        if let url = URL(string: "http://api.exchangeratesapi.io/v1/latest?access_key=48d0032f184d7508e339415d7cb3529e&symbols=USD") {
+            session.dataTask(with: url) { data, response, error in
+                if error != nil {
+                    completion()
+                }
+                
+                if let data = data {
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                           let ratesDict = json["rates"] as? [String: Any],
+                           let rate = ratesDict["USD"] as? Double,
+                           let formattedRate = Double(Globals.format(value: rate)) {
+                            Globals.exchangeRate = formattedRate
+                            completion()
+                        } else {
+                            completion()
+                        }
+                    } catch {
+                        completion()
+                    }
+                }
+                
+            }.resume()
+        } else {
+            completion()
+        }
     }
 }
 
