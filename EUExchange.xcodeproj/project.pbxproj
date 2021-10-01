@@ -23,6 +23,7 @@
 		0185D8D42702763500F5398F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0185D8D22702763500F5398F /* LaunchScreen.storyboard */; };
 		0185D8DF2702763500F5398F /* EUExchangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0185D8DE2702763500F5398F /* EUExchangeTests.swift */; };
 		0185D8EA2702763500F5398F /* EUExchangeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0185D8E92702763500F5398F /* EUExchangeUITests.swift */; };
+		01D2A0152706C0060080E03B /* ExchangeTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D2A0142706C0060080E03B /* ExchangeTableFooterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		0185D8E52702763500F5398F /* EUExchangeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EUExchangeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0185D8E92702763500F5398F /* EUExchangeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUExchangeUITests.swift; sourceTree = "<group>"; };
 		0185D8EB2702763500F5398F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01D2A0142706C0060080E03B /* ExchangeTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeTableFooterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 				0185D8CB2702763200F5398F /* ViewController.swift */,
 				016A78AF2702D3A000997CE6 /* ConversionViewController.swift */,
 				016A78B12702DDC800997CE6 /* ExchangeTableView.swift */,
+				01D2A0142706C0060080E03B /* ExchangeTableFooterView.swift */,
 				016A78B32702E16100997CE6 /* CircleSelect.swift */,
 				0185D8D02702763500F5398F /* Assets.xcassets */,
 				0185D8D22702763500F5398F /* LaunchScreen.storyboard */,
@@ -301,6 +304,7 @@
 				016A78B02702D3A000997CE6 /* ConversionViewController.swift in Sources */,
 				0185D8CA2702763200F5398F /* SceneDelegate.swift in Sources */,
 				016A78B42702E16100997CE6 /* CircleSelect.swift in Sources */,
+				01D2A0152706C0060080E03B /* ExchangeTableFooterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

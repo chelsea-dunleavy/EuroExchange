@@ -24,17 +24,19 @@ class ExchangeTableView: UIView {
     }
     
     let cellId: String = "exchange"
+    let footerId: String = "footer"
     
     lazy var tableView: UITableView = {
         let table = UITableView()
         table.separatorStyle = .singleLine
         table.register(ExchangeTableViewCell.self, forCellReuseIdentifier: cellId)
+        table.register(ExchangeTableFooterView.self, forHeaderFooterViewReuseIdentifier: footerId)
         table.backgroundColor = .clear
         table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
         table.allowsSelection = false
-        table.tableFooterView = UIView()
+        table.tableFooterView = UIView(frame: .zero)
         return table
     }()
 
@@ -64,10 +66,27 @@ class ExchangeTableView: UIView {
     func updateView() {
         tableView.reloadData()
     }
+    
+    func cellAmtChanged() {
+        var euroSum: Double = 0
+        var dollarAmt: Double = 0
+        for model in model.cells {
+            if model.isCellEnabled {
+                euroSum += model.euros
+                dollarAmt += model.dollarAmt
+            }
+        }
+        
+        if let footView = tableView.footerView(forSection: 0) as? ExchangeTableFooterView {
+            footView.model.totalEuros = euroSum
+            footView.model.totalDollars = dollarAmt
+        }
+    }
 
 }
 
 extension ExchangeTableView: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         model.cells.count
     }
@@ -75,13 +94,32 @@ extension ExchangeTableView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as? ExchangeTableViewCell {
             cell.model = model.cells[indexPath.row]
+            cell.model.amtChangedCompletion = cellAmtChanged
             return cell
         }
         return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        50
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if model.cells.count > 0 {
+            if let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: footerId) as? ExchangeTableFooterView {
+                return view
+            }
+        }
+
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if model.cells.count > 0 {
+            return 30
+        }
+        
+        return 0
     }
     
     func addNewCell() {
@@ -92,10 +130,12 @@ extension ExchangeTableView: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-struct ExchangeTableViewCellModel {
+class ExchangeTableViewCellModel {
     var name: String
     var euros: Double
     var dollarAmt: Double = 0
+    var amtChangedCompletion: () -> Void = { return }
+    var isCellEnabled = true
     
     init(name: String = "", euros: Double = 0) {
         self.name = name
@@ -122,6 +162,7 @@ class ExchangeTableViewCell: UITableViewCell {
     
     lazy var circleSelect: CircleSelect = {
         let view = CircleSelect()
+        view.selectionChanged = selectionChanged(to:)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 20).isActive = true
         view.widthAnchor.constraint(equalToConstant: 20).isActive = true
@@ -202,6 +243,40 @@ class ExchangeTableViewCell: UITableViewCell {
     
     func updateView() {
     }
+    
+    func selectionChanged(to: Bool) {
+        model.isCellEnabled = !to
+        model.amtChangedCompletion()
+        if !to {
+            enableCell()
+        } else {
+            disableCell()
+        }
+    }
+    
+    func disableCell() {
+        nameTextField.isUserInteractionEnabled = false
+        nameTextField.textColor = .gray
+        
+        euroTextField.isUserInteractionEnabled = false
+        euroTextField.textColor = .gray
+        
+        conversionLabel.textColor = .gray
+        
+        dollarLabel.textColor = .gray
+    }
+    
+    func enableCell() {
+        nameTextField.isUserInteractionEnabled = true
+        nameTextField.textColor = .black
+        
+        euroTextField.isUserInteractionEnabled = true
+        euroTextField.textColor = .black
+        
+        conversionLabel.textColor = .euBlue
+        
+        dollarLabel.textColor = .black
+    }
 }
 
 extension ExchangeTableViewCell: UITextFieldDelegate {
@@ -209,7 +284,7 @@ extension ExchangeTableViewCell: UITextFieldDelegate {
         if textField.tag == 1 {
             if let text = textField.text,
                !(textField.text?.isEmpty ?? true) {
-                if let textDouble = Double(text) {
+                if let textDouble = Double(text.replacingOccurrences(of: "€", with: "")) {
                     model.euros = textDouble
                     model.dollarAmt = textDouble * Globals.exchangeRate
                     dollarLabel.text = "$\(Globals.format(value: textDouble * Globals.exchangeRate))"
@@ -218,6 +293,8 @@ extension ExchangeTableViewCell: UITextFieldDelegate {
                 if !text.contains("€") {
                     textField.text = "€\(text)"
                 }
+                
+                model.amtChangedCompletion()
             }
         }
     }

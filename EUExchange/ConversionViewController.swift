@@ -41,7 +41,7 @@ class ConversionViewController: UIViewController {
     
     lazy var exchangeTableView: ExchangeTableView = {
         let view = ExchangeTableView()
-        view.model = ExchangeTableViewModel(cells: [ExchangeTableViewCellModel(), ExchangeTableViewCellModel()])
+        view.model = ExchangeTableViewModel()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

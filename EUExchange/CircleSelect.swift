@@ -17,6 +17,8 @@ class CircleSelect: UIView {
     }
     */
     
+    var selectionChanged: (Bool) -> Void = { _ in return }
+    
     var isSelected: Bool = false {
         didSet {
             updateView()
@@ -69,6 +71,7 @@ class CircleSelect: UIView {
     
     @objc func tapped() {
         isSelected = !isSelected
+        selectionChanged(isSelected)
     }
 
 }
