@@ -225,6 +225,7 @@ class ExchangeTableViewCell: UITableViewCell {
     }()
     
     func setupView() {
+        backgroundColor = .clear
         contentView.addSubview(circleSelect)
         contentView.isUserInteractionEnabled = true
         contentView.addSubview(stackView)

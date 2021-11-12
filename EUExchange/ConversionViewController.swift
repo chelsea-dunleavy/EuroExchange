@@ -72,7 +72,7 @@ class ConversionViewController: UIViewController {
     }
     
     func setupConstraints() {
-        topStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 16).isActive = true
+        topStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         topStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8).isActive = true
         topStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
         
